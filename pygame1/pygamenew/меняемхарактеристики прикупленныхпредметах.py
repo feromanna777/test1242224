@@ -3,8 +3,7 @@ from os import path
 
 import pygame
 import pygame_menu
-import json#30
-
+import json  # 30
 
 pygame.init()
 pygame.mixer.init()  # иницилизируем для работы с музыкой
@@ -91,15 +90,17 @@ def load_image(file, width, height):  # 22
 
 
 class Item:  # 23классс педмета
-    def __init__(self, name, price, file, is_bought, is_using):
+    def __init__(self, name, price, file, is_bought, is_using, is_using_only):
         self.name = name
         self.price = price
         self.file = file
-        self.image = load_image(file, PLAYER_WIDTH *2,
+        self.image = load_image(file, PLAYER_WIDTH * 2,
                                 PLAYER_HEIGHT * 2)  # 23 magas картинка для меню чуть меньшего размера чем полная картинка // 1.4 если игрок большой
-        self.full_image = load_image(file, PLAYER_WIDTH//2, PLAYER_HEIGHT//2)  # 23 полная картинка предмета для игры
+        self.full_image = load_image(file, PLAYER_WIDTH // 2,
+                                     PLAYER_HEIGHT // 2)  # 23 полная картинка предмета для игры
 
         self.is_using = is_using
+        self.is_using_only = is_using_only
         self.is_bought = is_bought
 
 
@@ -115,7 +116,7 @@ class ShopMenu:  # ! 23классс менюодежды
         self.top_label_on = load_image("images/menu/top_label_on.png", WIDTH, HEIGHT)
 
         self.items = []  # 30
-        for item in data: # 30
+        for item in data:  # 30
             self.items.append(Item(*item.values()))
 
         self.current_item = 0  # индекс текущего предмета
@@ -128,39 +129,36 @@ class ShopMenu:  # ! 23классс менюодежды
         # 23кнопка вперед создать выше  в игреMENY_NAV_XPAD MENY_NAV_YPAD
         # 23от всей шириныэкрана отнимаем отступ и саму ширину кнопки
 
-
-#28 кнопка назад
+        # 28 кнопка назад
         self.previous_button = Button("Назад", MENY_NAV_YPAD + 30, HEIGHT - MENY_NAV_YPAD,
                                       width=int(BUTTON_WIDTH // 1.2), height=int(BUTTON_HEIGHT // 1.2),
                                       func=self.to_previous)
 
-    #/ 28 кнопка назад
+        # / 28 кнопка назад
 
-    # 28
-        self.use_button = Button("Надеть", MENY_NAV_YPAD + 30, HEIGHT - MENY_NAV_YPAD - 90 - PADDING,
-                                 width=int(BUTTON_WIDTH // 1.2), height=int(BUTTON_HEIGHT // 1.2),
-                                 func=self.use_item)
+        # 28
+
+
+
+        self.use_button = Button("Использовать", MENY_NAV_YPAD + 30, HEIGHT - MENY_NAV_YPAD - 90 - PADDING,
+                                     width=int(BUTTON_WIDTH // 1.2), height=int(BUTTON_HEIGHT // 1.2),
+                                     func=self.use_item)
+
 
         self.buy_button = Button("Купить", MENY_NAV_YPAD + 30, HEIGHT - MENY_NAV_YPAD - 50 - PADDING,
                                  width=int(BUTTON_WIDTH // 1.2), height=int(BUTTON_HEIGHT // 1.5),
                                  func=self.buy)
 
-
         # текста
 
-
-
-
     # / 28
-
-
 
     def to_next(self):  # 23 наметка позже напишем
 
         if self.current_item != len(self.items) - 1:  # 23 проверяем что предмет не последний
             self.current_item += 1  # 23 переключаем на следующий предмет
         else:
-            self.current_item=0#если хотим сделать круговое переключение
+            self.current_item = 0  # если хотим сделать круговое переключение
 
     # 28 функция кнопки назад
     def to_previous(self):
@@ -170,42 +168,47 @@ class ShopMenu:  # ! 23классс менюодежды
         else:
             self.current_item = len(self.items) - 1
 
-            #/ 28 функция кнопки назад
-#28
+            # / 28 функция кнопки назад
+
+    # 28
     def use_item(self):
-        print(111111111111111111111111111111111111111111111111111111111111111)
         global player
 
         self.items[self.current_item].is_using = not self.items[self.current_item].is_using
-        #31
-        if self.items[self.current_item].is_using and self.items[self.current_item].name == "Футболка":
-            player.health=100
-            self.items[self.current_item].is_using=False
-#not self.items[self.current_item].is_using: Эта часть кода инвертирует текущее значение атрибута is_using для выбранного предмета. Если is_using было True, то после выполнения этой строки оно станет False, и наоборот.
+        # 31
+        if self.items[self.current_item].is_using and self.items[self.current_item].name == "Аптечка":
+            player.health = 100
+            self.items[self.current_item].is_using = False
+    def use_medkit(self):
+        global player
 
-    #1
-        # if self.items[self.current_item].is_using ==True:
-            # if item.name==""
+        player.health = 100
+
+
+    # not self.items[self.current_item].is_using: Эта часть кода инвертирует текущее значение атрибута is_using для выбранного предмета. Если is_using было True, то после выполнения этой строки оно станет False, и наоборот.
+
+    # 1
+    # if self.items[self.current_item].is_using ==True:
+    # if item.name==""
 
     def buy(self):
         global gold
-        if self.items[self.current_item].is_bought == False: #30
+        if self.items[self.current_item].is_bought == False:  # 30
             if gold >= self.items[self.current_item].price:
                 gold -= self.items[self.current_item].price
                 self.items[self.current_item].is_bought = True
 
-
     def update(self):  # 23 добавляем функцию для будующих многих кнопок обновления
         self.next_button.update()
-        self.previous_button.update() # 28
-        self.use_button.update() # 28
+        self.previous_button.update()  # 28
+        self.use_button.update()  # 28
         self.buy_button.update()  # 28
 
     def is_clicked(self, event):  # 23 добавляем функцию для будующих многих кнопок кликнуто
         self.next_button.is_clicked(event)  # получает в качестве аргумента событие
         self.previous_button.is_clicked(event)
-        self.use_button.is_clicked(event)#29
-        self.buy_button.is_clicked(event)#30
+        self.use_button.is_clicked(event)  # 29
+        self.buy_button.is_clicked(event)  # 30
 
     def draw(self, screen):  # 23 добавляем функцию для отрисовки с параметром экран
         screen.blit(self.menu_page, (0, 0))  # 23 рисуем в нулевых оординатах так как картинка занимает все место
@@ -218,7 +221,7 @@ class ShopMenu:  # ! 23классс менюодежды
             draw_text(screen, "куплено", 20, 700, 192, BLACK)  # 29
         # else:
         #     screen.blit(self.bottom_label_off, (0, 10))  # 23 то отрисовывем боттом лэйбл off не активный лэйбл
-        if self.items[self.current_item].is_using:# 23 используется ли сейчас предмет
+        if self.items[self.current_item].is_using:  # 23 используется ли сейчас предмет
             draw_text(screen, "использовано", 20, 700, 109, BLACK)
         #     screen.blit(self.top_label_on, (0, 0))  # 23 то отрисовывем топ лэйбл on
         # else:
@@ -227,16 +230,12 @@ class ShopMenu:  # ! 23классс менюодежды
         self.next_button.draw(screen)  # 23 отрисовать кнопку "следующий"
         self.previous_button.draw(screen)  # 28 отрисовать кнопку "назад"
         self.use_button.draw(screen)  # 28
-        self.buy_button.draw(screen) #29
+        self.buy_button.draw(screen)  # 29
 
-
-        #текст 29
-        draw_text(screen, self.items[self.current_item].name, 40, WIDTH//2, HEIGHT-400, BLACK)
-        draw_text(screen, str(self.items[self.current_item].price), 40, WIDTH // 2, HEIGHT-200, BLACK)
+        # текст 29
+        draw_text(screen, self.items[self.current_item].name, 40, WIDTH // 2, HEIGHT - 400, BLACK)
+        draw_text(screen, str(self.items[self.current_item].price), 40, WIDTH // 2, HEIGHT - 200, BLACK)
         # draw_text(screen, "надето", 20, 700, 109, BLACK) #29
-
-
-
 
         # screen.blit(self.use_text, self.use_text_rect)
         # screen.blit(self.buy_text, self.buy_text_rect)
@@ -280,7 +279,7 @@ class Button:  # 22 создаем класс для кнопок
             if self.rect.collidepoint(event.pos):  # 3 проверяем над кнопкой ли мышка
                 self.is_pressed = True  # 3 меняем нажатая мышка на правду
                 print("кнопка нажата")
-                self.func() ################ CALL THE FUNCTION ##############################
+                self.func()  ################ CALL THE FUNCTION ##############################
         elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:  # 3 для отжатой кнопки
             self.is_pressed = False
 
@@ -367,14 +366,15 @@ class Bullet(pygame.sprite.Sprite):
         # если пуля зайдет за верхнюю часть экрана
         if self.rect.bottom < 0:
             self.kill()
-#Метод kill() в Pygame не удаляет объект сразу, а помечает его для удаления из группы спрайтов. Позднее, при обновлении группы спрайтов, объект будет фактически удален.
-#Это полезно, например, в играх, где пули или другие объекты должны исчезнуть после того,
-#как они выходят за пределы видимой области экрана или выполняют определенное действие.#
 
-#золото
-with open("предметы.json.", encoding="utf-8") as f: #30
+
+# Метод kill() в Pygame не удаляет объект сразу, а помечает его для удаления из группы спрайтов. Позднее, при обновлении группы спрайтов, объект будет фактически удален.
+# Это полезно, например, в играх, где пули или другие объекты должны исчезнуть после того,
+# как они выходят за пределы видимой области экрана или выполняют определенное действие.#
+
+# золото
+with open("предметы.json", encoding="utf-8") as f:  # 30
     data = json.load(f)
-
 
 # Создаем игру и окно
 pygame.init()
@@ -418,13 +418,13 @@ shopMenuName = "Shop menu"
 score = 0  # 20
 # gold = 500 # 20 #золото
 
-with open("счет24_2.txt", "r", encoding="utf-8") as f:#24.2
-    best_score = int(f.read())#24.2
-    print(best_score)#24.2
+with open("счет24_2.txt", "r", encoding="utf-8") as f:  # 24.2
+    best_score = int(f.read())  # 24.2
+    print(best_score)  # 24.2
 
-with open("24_2золото.txt", "r", encoding="utf-8") as f:#24.2
-    gold = int(f.read())#24.2
-    print(gold)#24.2
+with open("24_2золото.txt", "r", encoding="utf-8") as f:  # 24.2
+    gold = int(f.read())  # 24.2
+    print(gold)  # 24.2
 
 # Загрузка музыки
 pygame.mixer.music.load("музыкалеса2.mp3")
@@ -436,7 +436,8 @@ button_x = WIDTH - BUTTON_WIDTH - PADDING  # 22 3 переменная для к
 
 mode = "Main"  # 23. добавляем режим мэйн в течение игры
 
-def shop_menu_on():# 23.2 функция влючения меню
+
+def shop_menu_on():  # 23.2 функция влючения меню
     global mode
     print("магазин меню включено")  # 23.2
     mode = "Shop menu"  # 23.2 переключает меню на включено
@@ -450,24 +451,23 @@ eat_button = Button("еда", button_x - 200, PADDING)  # 22  3 создание
 print(eat_button.rect)
 shop_menu = ShopMenu(data["clothes"])  # 23/2!!!!!!!!!
 
-#быстрое меню
+
+# быстрое меню
 
 
 class Menu:
     def __init__(self):
-
         background_image = pygame_menu.BaseImage(
             image_path="background.jpg"
         )
         mytheme = pygame_menu.Theme(background_color=background_image,  # transparent background
-                        title_background_color=(4, 47, 126),
-                        title_font_shadow=True,
-                        widget_padding=25,
-                        widget_font_color=(255, 0, 0),  # Red font color for widgets
-                        title_font_color=(0, 255, 0),  # Green font color for the title
-                        selection_color=(0, 0,255) #цвет при наведении мыши
-                        )
-
+                                    title_background_color=(4, 47, 126),
+                                    title_font_shadow=True,
+                                    widget_padding=25,
+                                    widget_font_color=(255, 0, 0),  # Red font color for widgets
+                                    title_font_color=(0, 255, 0),  # Green font color for the title
+                                    selection_color=(0, 0, 255)  # цвет при наведении мыши
+                                    )
 
         self.surface = pygame.display.set_mode((900, 550))
         self.menu = pygame_menu.Menu(
@@ -479,33 +479,28 @@ class Menu:
         )
 
         self.menu.add.button("Играть", self.start_game)
-        self.menu.add.button("Выйти", quit) #изменяем функцию на просто выход
+        self.menu.add.button("Выйти", quit)  # изменяем функцию на просто выход
         self.menu.add.button("Магазин", self.magas)
 
         self.run()
 
     def start_game(self):
-
-        self.menu.disable()#отключить меню
+        self.menu.disable()  # отключить меню
         global mode
         mode = "Main"
 
-    def magas(self,):
+    def magas(self, ):
         self.menu.disable()  # отключить меню
         global mode
         mode = "Shop menu"
         shop_menu_on()
 
-
     def run(self):
-
-        self.menu.enable()# включить меню используется для включения меню в игре после того, как оно было отключено или скрыто
+        self.menu.enable()  # включить меню используется для включения меню в игре после того, как оно было отключено или скрыто
         self.menu.mainloop(self.surface)
 
 
-
-#быстрое меню
-
+# быстрое меню
 
 
 menu_app = Menu()
@@ -516,15 +511,15 @@ while True:
         if item.is_using and item.name == "Пистолет":
             bullet_img = pygame.image.load(path.join(img_dir, "пуля2б.png"))
             bullet_img = pygame.transform.scale(bullet_img, (70, 30))
-        if item.is_using==False and item.name == "Пистолет":
+        if item.is_using == False and item.name == "Пистолет":
             bullet_img = pygame.image.load(path.join(img_dir, "bullet.png"))
-#31
-        # if item.is_using and item.name == "Футболка" and item.is_bought==True :
-        #     lives=lives+1
-        #     item
+    # 31
+    # if item.is_using and item.name == "Футболка" and item.is_bought==True :
+    #     lives=lives+1
+    #     item
 
     # СОБЫТИЯ
-    print("!",mode)
+    print("!", mode)
 
     # pygame.mixer.music.play() #музыкаиграть припораженииможновставить
     # Контролируем ФПС
@@ -533,7 +528,7 @@ while True:
     # Ввод события (нажатие клавиш, нажатия мыши)
     for e in pygame.event.get():
         if mode == "Main":
-        # Если нажали на крестик
+            # Если нажали на крестик
             if e.type == pygame.QUIT:
                 quit()
 
@@ -564,38 +559,30 @@ while True:
         #         ==1:
         #         mode="menu"
 
-
-    if mode=="menu":
+    if mode == "menu":
         # menu_app.
         menu_app.run()
-        #?
+        # ?
 
-            # if e.type == pygame.KEYDOWN:  # 23.2 делаем выход на клавишу ESCAPE в цикл игры
-            #     if e.key == pygame.K_ESCAPE:  # 23.2
-            #         mode = "Main"
+        # if e.type == pygame.KEYDOWN:  # 23.2 делаем выход на клавишу ESCAPE в цикл игры
+        #     if e.key == pygame.K_ESCAPE:  # 23.2
+        #         mode = "Main"
 
-
-
-
-
-
-
-    if mode=="Main":
+    if mode == "Main":
         for e in pygame.event.get():
             if e.type == pygame.KEYDOWN:  # 23.2 делаем выход на клавишу ESCAPE в цикл игры
                 if e.key == pygame.K_ESCAPE:  # 23.2
                     mode = "Main"  # 23.2
             # Если событие, которое поймал компьютер - это нажатие на клавишу
 
-
-    # Обновление
+        # Обновление
 
         shop_button.update()  # 22.2.s
 
         eat_button.update()  # 22 обновляем кнопку
 
         all_sprites.update()
-        shop_menu.update() # 23 обновляем shop meni
+        shop_menu.update()  # 23 обновляем shop meni
 
         # столкновение пули и моба
         hits = pygame.sprite.groupcollide(bullets, mobs, True, True)
@@ -625,8 +612,7 @@ while True:
                         f.write(str(gold))  # 24.2
                         print(gold)  # 24.2
 
-
-                    "записываем купленные предметы" #31
+                    "записываем купленные предметы"  # 31
 
                     data = {
                         "clothes": []
@@ -674,13 +660,10 @@ while True:
 
         shop_button.draw(screen)  # 22.2s
 
-        #29
+        # 29
         for item in shop_menu.items:
             if item.is_using:
                 screen.blit(item.full_image, (player.rect.x, player.rect.y))
-
-
-
 
     if mode == "Shop menu":  # 23.2 добавляем отрисовку меню магазина
         shop_menu.draw(screen)

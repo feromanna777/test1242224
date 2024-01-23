@@ -1,1 +1,32 @@
-{"clothes": [{"name": "Синяя футболка", "price": 10, "image": "img/items/синяя_футболка.png", "is_using": true, "is_bought": true}, {"name": "Пистолет", "price": 10, "image": "img/items/пистолетпредмет.png", "is_using": true, "is_bought": true}, {"name": "Паук", "price": 50, "image": "img/items/паук-removebg-preview (1).png", "is_using": false, "is_bought": false}]}
+{
+  "clothes": [
+    {
+      "name": "Синяя футболка",
+      "price": 10,
+      "image": "img/items/синяя_футболка.png",
+      "is_using": true,
+      "is_bought": true
+    },
+    {
+      "name": "Пистолет",
+      "price": 10,
+      "image": "img/items/пистолетпредмет.png",
+      "is_using": true,pyt
+      "is_bought": true
+    },
+    {
+      "name": "Паук",
+      "price": 50,
+      "image": "img/items/паук-removebg-preview (1).png",
+      "is_using": true,
+      "is_bought": true
+    },
+    {
+      "name": "Аптечка",
+      "price": 50,
+      "image": "img/items/img.png",
+      "is_using": false,
+      "is_bought": true
+    }
+  ]
+}
